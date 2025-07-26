@@ -73,8 +73,8 @@ func seedData() {
 	employees := []models.Employee{
 		{Name: "Иван Иванов Иванович", Position: "Backend разработчик", DepartmentID: depts[0].ID},
 		{Name: "Пётр Петров Сергеевич", Position: "Frontend разработчик", DepartmentID: depts[0].ID},
-		{Name: "Анна Смирнова", Position: "Менеджер по продажам", DepartmentID: depts[1].ID},
-		{Name: "Мария Козлова", Position: "HR-специалист", DepartmentID: depts[2].ID},
+		{Name: "Анна Смирнова Олеговна", Position: "Менеджер по продажам", DepartmentID: depts[1].ID},
+		{Name: "Мария Козлова Дмитриевна", Position: "HR-специалист", DepartmentID: depts[2].ID},
 	}
 	DB.Create(&employees)
 	log.Info("Сидинг завершён")

@@ -36,17 +36,19 @@ func SetupRoutes(r *gin.Engine) {
 		})
 
 		api.PUT("/employees/:id", func(c *gin.Context) {
-			id := c.Param("id")
-			var emp models.Employee
-			if err := c.ShouldBindJSON(&emp); err != nil {
-				c.JSON(http.StatusBadRequest, models.Error("Неверный JSON"))
+			var input models.Employee
+			if err := c.ShouldBindJSON(&input); err != nil {
+				c.JSON(http.StatusBadRequest, models.Error("Неверный формат JSON"))
 				return
 			}
-			if err := service.UpdateEmployee(id, &emp); err != nil {
-				c.JSON(http.StatusBadRequest, models.Error("Ошибка обновления сотрудника"))
+
+			updated, err := service.UpdateEmployee(c.Param("id"), &input)
+			if err != nil {
+				c.JSON(http.StatusBadRequest, models.Error(err.Error()))
 				return
 			}
-			c.JSON(http.StatusOK, models.Success(emp))
+
+			c.JSON(http.StatusOK, models.Success(updated))
 		})
 
 		api.DELETE("/employees/:id", func(c *gin.Context) {
