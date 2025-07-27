@@ -1,3 +1,42 @@
+# services:
+#   db:
+#     image: postgres:15
+#     container_name: go-postgres
+#     restart: always
+#     environment:
+#       POSTGRES_USER: ${DB_USER}
+#       POSTGRES_PASSWORD: ${DB_PASSWORD}
+#       POSTGRES_DB: ${DB_NAME}
+#     ports:
+#       - "5432:5432"
+#     volumes:
+#       - pg_data:/var/lib/postgresql/data
+#     healthcheck:  
+#       test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
+#       interval: 5s
+#       timeout: 5s
+#       retries: 10
+
+#   app:
+#     build: .
+#     container_name: go-app
+#     depends_on:
+#       db:
+#         condition: service_healthy  
+#     ports:
+#       - "8080:8080"
+#     environment:
+#       DB_HOST: ${DB_HOST}
+#       DB_PORT: ${DB_PORT}
+#       DB_USER: ${DB_USER}
+#       DB_PASSWORD: ${DB_PASSWORD}
+#       DB_NAME: ${DB_NAME}
+#     volumes:
+#       - .:/app
+#     command: ["sh", "-c", "go run main.go"]
+
+# volumes:
+#   pg_data:
 services:
   db:
     image: postgres:15
@@ -26,7 +65,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      DB_HOST: ${DB_HOST}
+      DB_HOST: ${DB_HOST_DOCKER}
       DB_PORT: ${DB_PORT}
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
@@ -34,6 +73,20 @@ services:
     volumes:
       - .:/app
     command: ["sh", "-c", "go run main.go"]
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: vue-frontend
+    ports:
+      - "5173:5173" 
+    environment:
+      - VITE_API_BASE_URL=http://go-app:8080
+    command: ["npm", "run", "dev"]
+    working_dir: /app
+    depends_on:
+      - app
 
 volumes:
   pg_data:
