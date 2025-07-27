@@ -57,6 +57,8 @@ func Init() {
 		log.WithError(err).Fatal("Ошибка миграции БД")
 	}
 	log.Info("Миграция завершена")
+	DB.Exec(`ALTER TABLE employees DROP COLUMN IF EXISTS deleted_at`)
+	DB.Exec(`ALTER TABLE departments DROP COLUMN IF EXISTS deleted_at`)
 	seedData()
 }
 

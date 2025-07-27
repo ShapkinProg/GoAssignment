@@ -1,15 +1,15 @@
 <template>
   <div>
     <input v-model="newDept" placeholder="Название отдела" />
-    <button @click="addDepartment">➕ Добавить</button>
+    <button @click="addDepartment">Добавить</button>
 
     <ul>
       <li v-for="dept in departments" :key="dept.ID">
-        <!-- Название отдела -->
+  
         <span v-if="!dept.editing">{{ dept.Name }}</span>
         <input v-else v-model="dept.editName" />
 
-        <!-- Кнопки -->
+
         <template v-if="!dept.editing">
           <button @click="startEdit(dept)"> ✏️</button>
           <button @click="deleteDepartment(dept.ID)"> 🗑</button>

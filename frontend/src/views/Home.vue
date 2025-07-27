@@ -23,7 +23,8 @@
 
 
           <td>
-            <span v-if="!emp.editing">{{ emp.Department?.Name || '—' }}</span>
+            <span v-if="!emp.editing && emp.Department.IsDeleted">{{'Отдел удален' }}</span>
+            <span v-else-if="!emp.editing">{{ emp.Department.Name }}</span>
             <select v-else v-model="emp.editDeptID">
               <option v-for="d in departments" :key="d.ID" :value="Number(d.ID)">{{ d.Name }}</option>
             </select>
@@ -134,11 +135,13 @@ const saveEmployee = async (emp) => {
 }
 
 const deleteEmployee = async (id) => {
-  const res = await axios.delete(`/api/employees/${id}`)
-  if (res.data.success || res.status === 204) {
-    fetchData()
-  } else {
-    console.error("Ошибка удаления:", res.data.error)
+   if (confirm("Удалить сотрудника?")) {
+      const res = await axios.delete(`/api/employees/${id}`)
+      if (res.data.success || res.status === 204) {
+        fetchData()
+      } else {
+        console.error("Ошибка удаления:", res.data.error)
+      }
   }
 }
 

@@ -22,7 +22,7 @@ npm install
 ```
 npm run dev
 ```
-Сборка проекта (уже собран)
+Сборка проекта (уже собран -> /frontend/dist)
 ```
 npm run build
 ```

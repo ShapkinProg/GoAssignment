@@ -10,7 +10,8 @@ import (
 
 func GetAllEmployees() ([]models.Employee, error) {
 	var emps []models.Employee
-	err := db.DB.Preload("Department").Find(&emps).Error
+	// err := db.DB.Preload("Department").Find(&emps).Error
+	err := db.DB.Preload("Department").Where("is_deleted = ?", false).Find(&emps).Error
 	return emps, err
 }
 
@@ -64,12 +65,13 @@ func UpdateEmployee(id string, input *models.Employee) (*models.Employee, error)
 }
 
 func DeleteEmployee(id string) error {
-	return db.DB.Delete(&models.Employee{}, id).Error
+	// return db.DB.Delete(&models.Employee{}, id).Error
+	return db.DB.Model(&models.Employee{}).Where("id = ?", id).Update("is_deleted", true).Error
 }
 
 func GetAllDepartments() ([]models.Department, error) {
 	var depts []models.Department
-	err := db.DB.Find(&depts).Error
+	err := db.DB.Where("is_deleted = ?", false).Find(&depts).Error
 	return depts, err
 }
 
@@ -87,12 +89,13 @@ func UpdateDepartment(id string, input *models.Department) error {
 }
 
 func DeleteDepartment(id string) error {
-	return db.DB.Delete(&models.Department{}, id).Error
+	// return db.DB.Delete(&models.Department{}, id).Error
+	return db.DB.Model(&models.Department{}).Where("id = ?", id).Update("is_deleted", true).Error
 }
 
 func Validate(e *models.Employee) error {
 	if e.Name != "" {
-		parts := len(splitByWhitespace(e.Name))
+		parts := len(strings.Fields(e.Name))
 		if parts != 3 {
 			return errors.New("ФИО должно содержать 3 слова")
 		}
@@ -101,31 +104,12 @@ func Validate(e *models.Employee) error {
 		return errors.New("Должность слишком короткая")
 	}
 	var count int64
-	err := db.DB.Model(&models.Department{}).Where("id = ?", e.DepartmentID).Count(&count).Error
+	err := db.DB.Model(&models.Department{}).Where("id = ? AND is_deleted = false", e.DepartmentID).Count(&count).Error
 	if err != nil {
 		return errors.New("ошибка при проверке отдела")
 	}
 	if count == 0 {
-		return errors.New(fmt.Sprintf("отдел с ID %d не найден", e.DepartmentID))
+		return fmt.Errorf("отдел с ID %d не найден", e.DepartmentID)
 	}
 	return nil
-}
-
-func splitByWhitespace(s string) []string {
-	var out []string
-	curr := ""
-	for _, r := range s {
-		if r == ' ' || r == '\t' || r == '\n' {
-			if curr != "" {
-				out = append(out, curr)
-				curr = ""
-			}
-		} else {
-			curr += string(r)
-		}
-	}
-	if curr != "" {
-		out = append(out, curr)
-	}
-	return out
 }
