@@ -12,7 +12,7 @@ http://localhost:8080
 ```
 ## Локальный запуск без Docker
 
-**Запуск фронта:**
+**Запуск фронта**
 
 ```
 cd frontend
@@ -27,18 +27,7 @@ npm run dev
 npm run build
 ```
 
-**Создать базу данных:**
-
-```sql
-CREATE DATABASE go_demo;
-```
-Убедитесь, что параметры подключения соответствуют:
-- user:     postgres
-- password: 1111
-- host:     localhost
-- port:     5432
-
-**Запуск:**
+**Запуск бекенда**
 
 ```
 go run main.go --local
@@ -47,3 +36,4 @@ go run main.go --local
 ```
 go run main.go -l
 ```
+Настройеи подлкючения к БД лежат в .env
