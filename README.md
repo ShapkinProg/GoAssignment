@@ -13,7 +13,7 @@ http://localhost:8080
 ## Локальный запуск без Docker
 
 **Запуск фронта:**
-Перед первым запуском:
+
 ```
 cd frontend
 npm install
@@ -38,7 +38,7 @@ CREATE DATABASE go_demo;
 - host:     localhost
 - port:     5432
 
-2. **Запуск:**
+**Запуск:**
 
 ```
 go run main.go --local
