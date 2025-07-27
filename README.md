@@ -10,7 +10,9 @@ docker-compose up --build
 ```
 http://localhost:8080 
 ```
-## Запуск фронта:
+## Локальный запуск без Docker
+
+**Запуск фронта:**
 Перед первым запуском:
 ```
 cd frontend
@@ -20,13 +22,12 @@ npm install
 ```
 npm run dev
 ```
-Сборка проекта
+Сборка проекта (уже собран)
 ```
 npm run build
 ```
-## Локальный запуск без Docker
 
-1. **Создать базу данных вручную:**
+**Создать базу данных:**
 
 ```sql
 CREATE DATABASE go_demo;
@@ -38,6 +39,7 @@ CREATE DATABASE go_demo;
 - port:     5432
 
 2. **Запуск:**
+
 ```
 go run main.go --local
 ```
