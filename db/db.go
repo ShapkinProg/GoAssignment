@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/joho/godotenv"
 	log "github.com/sirupsen/logrus"
@@ -44,11 +45,15 @@ func Init() {
 		)
 	}
 
-	fmt.Println(dsn)
 	var err error
-	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	if err != nil {
-		log.WithError(err).Fatal("Ошибка подключения к БД")
+	for {
+		DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+		if err != nil {
+			log.WithError(err).Error("Ошибка подключения к БД, пробуем снова через 5 секунд")
+			time.Sleep(5 * time.Second)
+			continue
+		}
+		break
 	}
 	log.Info("Успешное подключение к БД")
 
@@ -57,8 +62,8 @@ func Init() {
 		log.WithError(err).Fatal("Ошибка миграции БД")
 	}
 	log.Info("Миграция завершена")
-	DB.Exec(`ALTER TABLE employees DROP COLUMN IF EXISTS deleted_at`)
-	DB.Exec(`ALTER TABLE departments DROP COLUMN IF EXISTS deleted_at`)
+	// DB.Exec(`ALTER TABLE employees DROP COLUMN IF EXISTS deleted_at`)
+	// DB.Exec(`ALTER TABLE departments DROP COLUMN IF EXISTS deleted_at`)
 	seedData()
 }
 
