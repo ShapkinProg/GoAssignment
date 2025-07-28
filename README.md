@@ -40,4 +40,3 @@ go run main.go --local
 ```
 go run main.go -l
 ```
-Настройки подлкючения к БД лежат в .env
