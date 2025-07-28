@@ -39,13 +39,13 @@ func UpdateEmployee(id string, input *models.Employee) (*models.Employee, error)
 		emp.Position = input.Position
 		updated = true
 	}
-	if input.DepartmentID != 0 {
+	if input.DepartmentID != 0 && input.DepartmentID != emp.DepartmentID {
 		emp.DepartmentID = uint(input.DepartmentID)
 		updated = true
 	}
 
 	if !updated {
-		return nil, errors.New("Нет данных для обновления")
+		return nil, errors.New("нет данных для обновления")
 	}
 
 	if err := Validate(&emp); err != nil {
@@ -76,6 +76,10 @@ func GetAllDepartments() ([]models.Department, error) {
 }
 
 func CreateDepartment(dept *models.Department) error {
+	dept.Name = strings.TrimSpace(dept.Name)
+	if dept.Name == "" {
+		return errors.New("название отдела не может быть пустым")
+	}
 	return db.DB.Create(dept).Error
 }
 
@@ -84,7 +88,10 @@ func UpdateDepartment(id string, input *models.Department) error {
 	if err := db.DB.First(&dept, id).Error; err != nil {
 		return err
 	}
-	dept.Name = input.Name
+	if strings.TrimSpace(input.Name) == "" {
+		return errors.New("название отдела не может быть пустым")
+	}
+	dept.Name = strings.TrimSpace(input.Name)
 	return db.DB.Save(&dept).Error
 }
 
@@ -101,7 +108,7 @@ func Validate(e *models.Employee) error {
 		}
 	}
 	if e.Position != "" && len(e.Position) < 3 {
-		return errors.New("Должность слишком короткая")
+		return errors.New("должность слишком короткая, минимум 3 символа")
 	}
 	var count int64
 	err := db.DB.Model(&models.Department{}).Where("id = ? AND is_deleted = false", e.DepartmentID).Count(&count).Error
@@ -109,7 +116,7 @@ func Validate(e *models.Employee) error {
 		return errors.New("ошибка при проверке отдела")
 	}
 	if count == 0 {
-		return fmt.Errorf("отдел с ID %d не найден", e.DepartmentID)
+		return fmt.Errorf("отдел с ID %d и именем %s не найден", e.DepartmentID, e.Department.Name)
 	}
 	return nil
 }

@@ -7,7 +7,7 @@
         {{ dept.Name }}
       </option>
     </select>
-    <button>➕ Добавить</button>
+    <button>Добавить</button>
     <p v-if="error" style="color: red">{{ error }}</p>
   </form>
 </template>
@@ -38,14 +38,15 @@ const submit = async () => {
     error.value = "ФИО должно содержать 3 слова"
     return
   }
-  if (!position.value) {
-    error.value = "Пожалуйста, выберите должность"
+  const trimmedPosition = position.value.trim()
+
+  if (trimmedPosition.length === 0) {
+    error.value = "Должность не может быть пустой"
     return
-  }
-    if (position.value.length < 3) {
-    error.value = "Должность слишком короткая"
+  } else if (trimmedPosition.length < 3) {
+    error.value = "Должность слишком короткая, минимум 3 символа"
     return
-  }
+  } 
   if (!departmentID.value || !departments.value.find(d => d.ID === departmentID.value)) {
     error.value = "Пожалуйста, выберите отдел"
     return

@@ -49,7 +49,7 @@ func Init() {
 	for {
 		DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 		if err != nil {
-			log.WithError(err).Error("Ошибка подключения к БД, пробуем снова через 5 секунд")
+			log.WithError(err).Error("Ошибка подключения к БД, новая попытка через 5 секунд")
 			time.Sleep(5 * time.Second)
 			continue
 		}
@@ -62,8 +62,8 @@ func Init() {
 		log.WithError(err).Fatal("Ошибка миграции БД")
 	}
 	log.Info("Миграция завершена")
-	// DB.Exec(`ALTER TABLE employees DROP COLUMN IF EXISTS deleted_at`)
-	// DB.Exec(`ALTER TABLE departments DROP COLUMN IF EXISTS deleted_at`)
+	DB.Exec(`ALTER TABLE employees DROP COLUMN IF EXISTS deleted_at`)
+	DB.Exec(`ALTER TABLE departments DROP COLUMN IF EXISTS deleted_at`)
 	seedData()
 }
 

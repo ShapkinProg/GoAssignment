@@ -60,8 +60,7 @@ const fetchData = async () => {
     axios.get("/api/employees"),
     axios.get("/api/departments")
   ])
-  console.log(empRes.data)
-  console.log(empRes.data.success)
+
   if (empRes.data.success && deptRes.data.success) {
     employees.value = empRes.data.data.map(emp => ({
       ...emp,
