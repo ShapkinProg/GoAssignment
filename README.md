@@ -6,9 +6,13 @@
 ```bash
 docker-compose up --build
 ```
-Сервер будет доступен по адресу:
+Сервер будет доступен по адресу с бека:
 ```
-http://localhost:8080 
+http://localhost:8080
+```
+Или с фронта:
+```
+http://localhost:5173
 ```
 ## Локальный запуск без Docker
 
